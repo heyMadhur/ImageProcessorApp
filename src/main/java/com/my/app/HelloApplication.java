@@ -48,37 +48,37 @@ public class HelloApplication extends Application {
 
         ImageProcessor processor = new ImageProcessor();
         ImageFilter imageFilter = new GreyScaleFilter();
-        Scanner sc = new Scanner(System.in);
 
-        boolean loop = true;
-
-        while (loop) {
-            System.out.println("\n\n----Welcome to Image Processing App----");
-            System.out.println("Process image -:");
-            System.out.println("1. Asynchronously");
-            System.out.println("2. Synchronously");
-            System.out.println("3. Exit");
-            System.out.print("Enter your choice [1-3]: ");
-            int choice = sc.nextInt();
-            switch (choice) {
-                case 1 -> {
-                    BufferedImage filteredImage = processor.processImage(image, 40, imageFilter, true);
-                    imageIO.sendImage(filteredImage, originalFileName);
+        // Run input & processing on a separate thread
+        new Thread(() -> {
+            Scanner sc = new Scanner(System.in);
+            boolean loop = true;
+            while (loop) {
+                System.out.println("\n\n----Welcome to Image Processing App----");
+                System.out.println("Process image -:");
+                System.out.println("1. Asynchronously");
+                System.out.println("2. Synchronously");
+                System.out.println("3. Exit");
+                System.out.print("Enter your choice [1-3]: ");
+                int choice = sc.nextInt();
+                switch (choice) {
+                    case 1 -> {
+                        BufferedImage filteredImage = processor.processImage(image, 40, imageFilter, true);
+                        imageIO.sendImage(filteredImage, originalFileName);
+                    }
+                    case 2 -> {
+                        BufferedImage filteredImage = processor.processImage(image, 40, imageFilter, false);
+                        imageIO.sendImage(filteredImage, originalFileName);
+                    }
+                    case 3 -> loop = false;
+                    default -> System.out.println("Wrong Input, please make sure give integer [1-3]");
                 }
-                case 2 -> {
-                    BufferedImage filteredImage = processor.processImage(image, 40, imageFilter, false);
-                    imageIO.sendImage(filteredImage, originalFileName);
-                }
-                case 3 -> loop = false;
-                default -> System.out.println("Wrong Input, please make sure give integer [1-3]");
             }
-        }
-
-        System.out.println("\nThank you for using the App.");
-        System.out.println("See you soon, any feedback appreciated 🥹");
-        System.out.println("Made in India ❤️ by Madhur Gupta ✨");
-
-        sc.close();
+            System.out.println("\nThank you for using the App.");
+            System.out.println("See you soon, any feedback appreciated 🥹");
+            System.out.println("Made in India ❤️ by Madhur Gupta ✨");
+            sc.close();
+        }).start();
     }
 
     public static void main(String[] args) {
